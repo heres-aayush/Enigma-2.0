@@ -31,3 +31,104 @@ body {
     text-wrap: balance;
   }
 }
+
+/*added*/ 
+nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 1rem;
+  background-color: black; /* Solid black background */
+  backdrop-filter: blur(10px); /* Blurs the background behind the nav */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border-bottom-left-radius: 1rem; /* Rounded bottom-left corner */
+  z-index: 20; /* Ensure it sits above other content */
+  overflow: hidden; /* Hide overflow for animations */
+}
+
+/* Motion Graphics: Glowing Animation */
+nav::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(1, 2, 10), transparent);
+  animation: glow 6s linear infinite;
+  z-index: -1; /* Place behind the content */
+}
+
+/* @keyframes glow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+} */
+
+nav ul {
+  display: flex;
+  gap: 1.5rem; /* Spacing between menu items */
+  list-style: none; /* Remove default list styling */
+  margin: 0;
+  padding: 0;
+  font-family: 'Courier New', Courier, monospace; /* Monospaced font for links */
+  font-size: 1.2rem; /* Small font size */
+}
+
+nav a {
+  text-decoration: none; /* Remove underline */
+  color: white; /* White text color */
+  transition: color 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effect */
+}
+
+nav a:hover {
+  color: #00ffff; /* Cyan color on hover */
+  transform: scale(1.1); /* Slightly enlarge the link on hover */
+  text-decoration: underline; /* Add underline on hover */
+}
+
+/* body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Raleway', sans-serif;
+  background-color: #000;
+} */
+
+.text-container {
+  height: 50vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-container h1 {
+  margin: 0;
+  font-size: 150px;
+  color: rgba(225, 225, 225, .01);
+  background-image: url("https://i.pinimg.com/564x/3a/22/13/3a221342b57ad5677d543a3b94da4473.jpg");
+  background-repeat: repeat;
+  -webkit-background-clip: text;
+  animation: animate 15s ease-in-out infinite;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+@keyframes animate {
+  0%, 100% {
+    background-position: left top;
+  }
+  25% {
+    background-position: right bottom;
+  }
+  50% {
+    background-position: left bottom;
+  }
+  75% {
+    background-position: right top;
+  }
+}
