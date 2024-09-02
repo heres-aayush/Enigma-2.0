@@ -26,7 +26,7 @@ export default function Home() {
 
       <div className="relative z-[-1] flex items-center justify-center before:absolute before:h-[400px] before:w-[400px] before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[400px] after:w-[400px] after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-3xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40">
       <div className="text-container">
-      <h1 className="text-white text-9xl font-extrabold">ENIGMA2.0</h1>
+      <h1 className="text-white text-5xl font-extrabold">ENIGMA 2.0</h1>
       </div>
 </div>
 
