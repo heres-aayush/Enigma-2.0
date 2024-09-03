@@ -132,3 +132,7 @@ nav a:hover {
     background-position: right top;
   }
 }
+
+.text-container {
+  animation: animate 1s linear infinite;
+}
