@@ -1,5 +1,7 @@
 import Image from 'next/image';
 import Footer from './footer'; // Adjust the import path as needed
+import styles from './login-signup.module.scss';
+
 
 export default function Home() {
   return (
@@ -10,9 +12,19 @@ export default function Home() {
           <li><a href="#home">Home</a></li>
           <li><a href="#features">Features</a></li>
           {/* <li><a href="#history">History</a></li> */}
-          <li><a href="#about">Teams</a></li>
+          {/* <li><a href="./about.html">Teams</a></li>
+           */}
+
+<li>
+  <a href="/teams.html" target="_blank">
+    Teams
+  </a>
+</li>
+
+
+
           {/* <li><a href="#contact">Contact</a></li> */}
-          <li><a href="#login">Login/Sign Up</a></li>
+          <li><a href="./login.html">Login/Sign Up</a></li>
         </ul>
       </nav>
 
@@ -50,7 +62,7 @@ export default function Home() {
         </a>
 
         <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          href="/upload.html"
           className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
           target="_blank"
           rel="noopener noreferrer"
@@ -67,7 +79,7 @@ export default function Home() {
         </a>
 
         <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+          href="/about.html"
           className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
           target="_blank"
           rel="noopener noreferrer"
@@ -84,7 +96,7 @@ export default function Home() {
         </a>
 
         <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+          href="/faqs.html"
           className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
           target="_blank"
           rel="noopener noreferrer"

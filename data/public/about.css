@@ -1,0 +1,80 @@
+/* Reset and Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  /* Keyframes for Background Animation */
+  @keyframes backgroundAnimation {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 100% 100%;
+    }
+  }
+  
+  .about-us {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    padding: 90px 0;
+    background: linear-gradient(45deg, #000000, #0d1333, #002bab);
+    background-size: 300% 300%; /* Ensures smooth gradient movement */
+    animation: backgroundAnimation 6s ease infinite; /* 15s duration for animation */
+  }
+  
+  .pic {
+    height: auto;
+    width: 400px;
+    border-radius: 12px;
+    z-index: 1; /* Ensure it is above the background */
+    position: relative; /* Allows positioning relative to its container */
+  }
+  
+  .about {
+    width: 1130px;
+    max-width: 85%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+  
+  .text {
+    width: 540px;
+  }
+  
+  .text h2 {
+    color: #ffffff;
+    font-size: 65px;
+    width: 600px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  
+  .text h5 {
+    color: #d4d4d4;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  
+  span {
+    color: #4070f4;
+  }
+  
+  .text .xx {
+    color: #898989;
+    font-size: 22px;
+    line-height: 28px;
+    letter-spacing: 2px;
+  }
+  
+  .data {
+    margin-top: 30px;
+  }
+  
