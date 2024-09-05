@@ -7,13 +7,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Github, Twitter } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { WavyBackground } from "@/components/ui/wavy-background"
 
 export default function AuroraBackgroundDemo() {
   const [isLogin, setIsLogin] = useState(true)
 
   const toggleForm = () => setIsLogin(!isLogin)
   return (
-    <AuroraBackground>
+      <WavyBackground className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8 bg-gray-800 rounded-xl shadow-2xl p-8 z-50">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-bold text-white">
@@ -139,6 +140,6 @@ export default function AuroraBackgroundDemo() {
           </div>
         </div>
       </div>
-    </AuroraBackground>
+    </WavyBackground>
   );
 }
