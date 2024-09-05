@@ -1,115 +1,19 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
- 
-@layer base {
-  :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+/* 
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+} */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
- 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
- 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
- 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
- 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
- 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
- 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
- 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-
-  }
-}
- 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
-}
-
-/* Custom styles for input placeholders */
-@layer components {
-  .input::placeholder {
-    @apply text-gray-500;
-  }
-}
-
-/* Custom styles for focus states */
 @layer utilities {
-  .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
-  }
-  .transition-all {
-    @apply transition-all duration-300 ease-in-out;
-  }
-  .custom-scrollbar {
-    &::-webkit-scrollbar {
-      width: 8px;
-    }
-    &::-webkit-scrollbar-track {
-      @apply bg-gray-800;
-    }
-    &::-webkit-scrollbar-thumb {
-      @apply bg-gray-600 rounded-full;
-    }
-    &::-webkit-scrollbar-thumb:hover {
-      @apply bg-gray-500;
-    }
-  }
   .text-balance {
     text-wrap: balance;
   }
 }
-
-/* Ensure proper sizing for all elements */
-@layer base {
-  :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    /* ... (keep other custom properties) ... */
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
-    /* background: radial-gradient(circle, rgb(0, 25, 217));
-    animation: glow 1s linear infinite;
-    z-index: -1; Place behind the content */
-    /* Add the gradient background here */
-    background:  radial-gradient(
-      circle at center,
-      rgba(0, 0, 255, 0.2),
-      transparent 60%
-    ),
-    black;
-  }
-}
-
-
-/* page css*/
 
 /*added*/ 
 nav {
@@ -169,11 +73,13 @@ nav a:hover {
 } */
 
 .text-container {
-  height: 50vh;
+  height: 100vh; /* Changed from 50vh to full viewport height */
   width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative; /* Add this */
+  z-index: 1; /* Add this to ensure text is above the background */
 }
 
 .text-container h1 {
@@ -183,6 +89,7 @@ nav a:hover {
   background-image: url("https://i.pinimg.com/564x/3a/22/13/3a221342b57ad5677d543a3b94da4473.jpg");
   background-repeat: repeat;
   -webkit-background-clip: text;
+  background-clip: text; /* Add this for better browser support */
   animation: animate 15s ease-in-out infinite;
   text-align: center;
   text-transform: uppercase;
