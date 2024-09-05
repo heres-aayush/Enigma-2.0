@@ -109,10 +109,27 @@ def redact_qr_codes(img, redact_mode):
 
 def redact_text(text):
     """Determine if the text matches any PII pattern and needs redaction."""
+    # Priority: Check for dates first (DOB and DOI)
+    for category in ["Date of Birth", "Date of Issue"]:
+        data = PII_PATTERNS[category]
+        if data["regex"] and re.search(data["regex"], text, re.IGNORECASE):
+            if category == "Date of Birth":
+                redact_dob = input("Date of Birth detected. Do you want to redact it? (yes/no): ").strip().lower()
+                if redact_dob == 'yes':
+                    return True, category
+                else:
+                    return False, None
+            return True, category
+
+    # Check other PII patterns after dates
     for category, data in PII_PATTERNS.items():
+        if category in ["Date of Birth", "Date of Issue"]:
+            continue  # Skip date patterns as they are already checked
+
         if data["regex"] and re.search(data["regex"], text, re.IGNORECASE):
             return True, category
 
+    # Check for keywords if no regex match found
     for category, data in PII_PATTERNS.items():
         if data["keywords"]:
             for keyword in data["keywords"]:
@@ -121,80 +138,74 @@ def redact_text(text):
 
     return False, None
 
-def apply_strong_blur(img, x, y, w, h, kernel_size=(51, 51), sigma=30):
-    """Apply a strong Gaussian blur to a specified area in the image."""
-    # Extract the region of interest (ROI)
-    roi = img[y:y + h, x:x + w]
-    # Apply Gaussian blur
-    blurred = cv2.GaussianBlur(roi, kernel_size, sigma)
-    img[y:y + h, x:x + w] = blurred
-
-def redact_image(image_path, output_path, redact_mode):
-    """Redact PII data and QR codes in an image file and save the redacted image."""
+def redact_image(image_path, redact_mode):
+    """Redact PII data from an image."""
     img = cv2.imread(image_path)
     if img is None:
-        print(f"Failed to load image: {image_path}")
+        print(f"Error loading image: {image_path}")
         return
     
-    # Redact PII data
     text_boxes = extract_text_with_boxes(image_path)
-    for (x, y, w, h, text) in text_boxes:
-        redact, category = redact_text(text)
-        if redact:
-            print(f"Redacting {category}: {text} at location {x}, {y}, {w}, {h}")
+    for x, y, w, h, text in text_boxes:
+        to_redact, category = redact_text(text)
+        if to_redact:
+            print(f"Redacting {category}: '{text}' at location {(x, y, w, h)}")
             if redact_mode == 'blank':
-                cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 0), -1)  # Black out the text
+                cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 0), -1)
             elif redact_mode == 'blur':
-                apply_strong_blur(img, x, y, w, h, kernel_size=(51, 51), sigma=30)
+                apply_strong_blur(img, x, y, w, h)
+            print(f"Successfully redacted {category} in the specified area: {(x, y, w, h)}")
 
-    # Redact QR codes with the chosen mode
     redact_qr_codes(img, redact_mode)
 
-    # Save the redacted image
+    output_path = f"redacted_{os.path.basename(image_path)}"
     cv2.imwrite(output_path, img)
-    print(f"Redacted image saved to {output_path}")
+    print(f"Redacted image saved at {output_path}")
 
-def redact_pdf(pdf_path, output_path, redact_mode):
-    """Redact PII data in a PDF file and save the redacted PDF."""
-    pdf_doc = fitz.open(pdf_path)
-    for page_num in range(pdf_doc.page_count):
-        page = pdf_doc[page_num]
+def apply_strong_blur(img, x, y, w, h, block_size=10):
+    """Apply a strong blur effect by pixelation."""
+    roi = img[y:y + h, x:x + w]
+    temp = cv2.resize(roi, (block_size, block_size), interpolation=cv2.INTER_LINEAR)
+    strong_blurred = cv2.resize(temp, (w, h), interpolation=cv2.INTER_NEAREST)
+    img[y:y + h, x:x + w] = strong_blurred
+    print(f"Pixelation applied to area: {(x, y, w, h)} with block size: {block_size}")
+
+def redact_pdf(pdf_path, redact_mode):
+    """Redact PII data from a PDF file."""
+    doc = fitz.open(pdf_path)
+    for page_num in range(doc.page_count):
+        page = doc[page_num]
         pix = page.get_pixmap()
-        image_path = f"temp_page_{page_num}.png"
-        pix.save(image_path)
-
-        redacted_image_path = f"redacted_{image_path}"
-        redact_image(image_path, redacted_image_path, redact_mode)
-
-        img = fitz.open(redacted_image_path)
-        rect = fitz.Rect(0, 0, img.width, img.height)
-        page.insert_image(rect, filename=redacted_image_path)
-
-        os.remove(image_path)
-        os.remove(redacted_image_path)
-
-    pdf_doc.save(output_path)
-    pdf_doc.close()
-    print(f"Redacted PDF saved to {output_path}")
+        img_array = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.h, pix.w, pix.n)
+        temp_img_path = f"temp_page_{page_num}.png"
+        cv2.imwrite(temp_img_path, img_array)
+        redact_image(temp_img_path, redact_mode)
+        redacted_img = cv2.imread(f"redacted_{temp_img_path}")
+        if redacted_img is not None:
+            pix = fitz.Pixmap(fitz.csRGB, redacted_img.shape[1], redacted_img.shape[0], redacted_img)
+            page.insert_image(page.rect, pixmap=pix)
+    redacted_pdf_path = f"redacted_{os.path.basename(pdf_path)}"
+    doc.save(redacted_pdf_path)
+    doc.close()
+    print(f"Redacted PDF saved at {redacted_pdf_path}")
 
 def main():
-    parser = argparse.ArgumentParser(description='Redact PII from images and PDFs.')
-    parser.add_argument('input_file', type=str, help='Input image or PDF file')
-    parser.add_argument('output_file', type=str, help='Output file for the redacted result')
+    parser = argparse.ArgumentParser(description="PII Redaction Tool")
+    parser.add_argument("file", help="Input image or PDF file to redact")
     args = parser.parse_args()
 
-    # Ask the user for redaction method
-    redact_mode = input("Choose redaction method - 'blank' for black rectangle or 'blur' for blurring: ").strip().lower()
-    while redact_mode not in ['blank', 'blur']:
-        print("Invalid choice. Please enter 'blank' or 'blur'.")
-        redact_mode = input("Choose redaction method - 'blank' for black rectangle or 'blur' for blurring: ").strip().lower()
+    redact_mode = input("Choose redaction mode ('blank' or 'blur'): ").strip().lower()
+    if redact_mode not in ['blank', 'blur']:
+        print("Invalid redaction mode. Please choose either 'blank' or 'blur'.")
+        return
 
-    if args.input_file.lower().endswith(('.png', '.jpg', '.jpeg')):
-        redact_image(args.input_file, args.output_file, redact_mode)
-    elif args.input_file.lower().endswith('.pdf'):
-        redact_pdf(args.input_file, args.output_file, redact_mode)
+    if args.file.lower().endswith('.pdf'):
+        redact_pdf(args.file, redact_mode)
+    elif args.file.lower().endswith(('.png', '.jpg', '.jpeg')):
+        redact_image(args.file, redact_mode)
     else:
-        print("Unsupported file format. Please provide an image or PDF file.")
+        print("Unsupported file type. Please provide an image or PDF file.")
 
 if __name__ == "__main__":
     main()
+
