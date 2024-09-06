@@ -108,7 +108,7 @@ export default function UploadPage() {
               className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white text-lg py-3"
               disabled={files.length === 0 || uploadStatus === 'uploading'}
             >
-              Mask
+              Blur
             </Button>
           </div>
           
