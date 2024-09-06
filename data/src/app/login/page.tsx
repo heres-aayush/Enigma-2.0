@@ -1,21 +1,79 @@
 "use client";
 
-import React, {useState} from "react";
-// import { AuroraBackground } from "@/components/ui/aurora-background";
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Github, Mail} from 'lucide-react'
-import Link from 'next/link'; 
-import { motion, AnimatePresence } from 'framer-motion'
-import { WavyBackground } from "@/components/ui/wavy-background"
+import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
+import { Button } from "../../components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Github, Mail } from 'lucide-react';
+import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import { WavyBackground } from "../../components/ui/wavy-background";
+import { FormEvent } from "react";
 
 export default function AuroraBackgroundDemo() {
-  const [isLogin, setIsLogin] = useState(true)
+  const [isLogin, setIsLogin] = useState(true);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
-  const toggleForm = () => setIsLogin(!isLogin)
+  const toggleForm = () => setIsLogin(!isLogin);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const email = (event.target as HTMLFormElement).email.value;
+    const password = (event.target as HTMLFormElement).password.value;
+    const confirmPassword = !isLogin ? (event.target as HTMLFormElement)['confirm-password'].value : null;
+    const mobile = !isLogin ? (event.target as HTMLFormElement).mobile.value : null;
+
+    if (!isLogin && password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      const response = await fetch(isLogin ? '/api/auth/login' : '/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(isLogin ? { email, password } : { email, password, mobile }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess(true); 
+        setError('');
+        
+          if (isLogin) {
+            router.push('/'); // Redirect to home after successful login
+          } else {
+            setTimeout(() => {
+              setSuccess(false); // Clear success message before redirect
+              router.push('/login'); // Redirect to login after successful signup
+            }, 1500); // 1.5-second delay for the user to see the success message
+          }
+
+      } else {
+        setError(data.error);
+        setSuccess(false);
+      }
+    } catch (error) {
+      setError('An unexpected error occurred.');
+      setSuccess(false);
+    }
+  };
+
+  useEffect(() => {
+    // Clear any success or error messages on page load to avoid them persisting
+    setSuccess(false);
+    setError('');
+  }, []);
+
   return (
-      <WavyBackground className="min-h-screen flex items-center justify-center p-4">
+    <WavyBackground className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8 bg-gray-800 rounded-xl shadow-2xl p-8 z-50">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-bold text-white">
@@ -28,6 +86,7 @@ export default function AuroraBackgroundDemo() {
             </button>
           </p>
         </div>
+
         <AnimatePresence mode="wait">
           <motion.form
             key={isLogin ? "login" : "signup"}
@@ -36,8 +95,7 @@ export default function AuroraBackgroundDemo() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
             className="mt-8 space-y-6"
-            action="#"
-            method="POST"
+            onSubmit={handleSubmit}
           >
             <div className="space-y-4 rounded-md shadow-sm">
               <div>
@@ -54,6 +112,7 @@ export default function AuroraBackgroundDemo() {
                   placeholder="Email address"
                 />
               </div>
+
               {!isLogin && (
                 <div>
                   <Label htmlFor="mobile-number" className="sr-only">
@@ -70,6 +129,7 @@ export default function AuroraBackgroundDemo() {
                   />
                 </div>
               )}
+
               <div>
                 <Label htmlFor="password" className="sr-only">
                   Password
@@ -84,6 +144,7 @@ export default function AuroraBackgroundDemo() {
                   placeholder="Password"
                 />
               </div>
+
               {!isLogin && (
                 <div>
                   <Label htmlFor="confirm-password" className="sr-only">
@@ -110,9 +171,21 @@ export default function AuroraBackgroundDemo() {
                 {isLogin ? "Log in" : "Sign up"}
               </Button>
             </div>
+
+            {success && (
+              <div className="mt-4 text-center text-green-500">
+                {isLogin ? "Logged in successfully! Redirecting..." : "Account created successfully!"}
+              </div>
+            )}
+
+            {error && (
+              <div className="mt-4 text-center text-red-500">
+                {error}
+              </div>
+            )}
           </motion.form>
         </AnimatePresence>
-        
+
         <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -141,10 +214,10 @@ export default function AuroraBackgroundDemo() {
           </div>
         </div>
         <div className="text-center">
-            <Link href="./forgot-password" className="text-sm text-gray-600 hover:text-gray-900">
-              Forgot your password?
-            </Link>
-          </div>
+          <Link href="./forgot-password" className="text-sm text-gray-600 hover:text-gray-900">
+            Forgot your password?
+          </Link>
+        </div>
       </div>
     </WavyBackground>
   );
