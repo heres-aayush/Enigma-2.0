@@ -111,62 +111,7 @@
 
 /* page css*/
 
-/*added*/ 
-nav {
-  position: fixed;
-  top: 0;
-  right: 0;
-  padding: 1rem;
-  background-color: rgb(4, 10, 35); /* Solid black background */
-  backdrop-filter: blur(10px); /* Blurs the background behind the nav */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  border-bottom-left-radius: 1rem; /* Rounded bottom-left corner */
-  z-index: 20; /* Ensure it sits above other content */
-  overflow: hidden; /* Hide overflow for animations */
-}
 
-/* Motion Graphics: Glowing Animation */
-nav::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(1, 2, 10), transparent);
-  animation: glow 1s linear infinite;
-  z-index: -1; /* Place behind the content */
-}
-
-nav ul {
-  display: flex;
-  gap: 1.5rem; /* Spacing between menu items */
-  list-style: none; /* Remove default list styling */
-  margin: 0;
-  padding: 0;
-  font-family: "Gill Sans", sans-serif; /* Monospaced font for links */
-  font-size: 1.3rem; /* Small font size */
-  font-weight: 400;
-}
-
-nav a {
-  text-decoration: none; /* Remove underline */
-  color: white; /* White text color */
-  transition: color 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effect */
-}
-
-nav a:hover {
-  color: rgb(219, 73, 53); /* Cyan color on hover */
-  transform: scale(1.1); /* Slightly enlarge the link on hover */
-  text-decoration: underline; /* Add underline on hover */
-}
-
-/* body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Raleway', sans-serif;
-  background-color: #000;
-} */
 
 .text-container {
   height: 50vh;

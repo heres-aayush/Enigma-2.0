@@ -4,6 +4,8 @@
  * Mobile navbar is better positioned at bottom right.
  **/
 
+'use client'
+
 import { cn } from "@/lib/utils";
 import { IconLayoutNavbarCollapse } from "@tabler/icons-react";
 import {
@@ -16,6 +18,7 @@ import {
 } from "framer-motion";
 import Link from "next/link";
 import { useRef, useState } from "react";
+
 
 export const FloatingDock = ({
   items,
@@ -48,7 +51,7 @@ const FloatingDockMobile = ({
         {open && (
           <motion.div
             layoutId="nav"
-            className="absolute bottom-full mb-2 inset-x-0 flex flex-col gap-2"
+            className="absolute bottom-full mb-6 inset-x-0 flex flex-col gap-2"
           >
             {items.map((item, idx) => (
               <motion.div
@@ -102,7 +105,7 @@ const FloatingDockDesktop = ({
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
       className={cn(
-        "mx-auto hidden md:flex h-16 gap-4 items-end  rounded-2xl bg-gray-50 dark:bg-neutral-900 px-4 pb-3",
+        "mx-auto hidden md:flex h-16 gap-4 items-end  rounded-2xl bg-gray-50 dark:bg-neutral-900 px-4 pb-3 mb-10",
         className
       )}
     >
