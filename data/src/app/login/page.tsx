@@ -5,7 +5,8 @@ import React, {useState} from "react";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Github, Twitter } from 'lucide-react'
+import { Github, Mail} from 'lucide-react'
+import Link from 'next/link'; 
 import { motion, AnimatePresence } from 'framer-motion'
 import { WavyBackground } from "@/components/ui/wavy-background"
 
@@ -134,11 +135,16 @@ export default function AuroraBackgroundDemo() {
               variant="outline"
               className="w-full flex items-center justify-center px-4 py-2 border border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-400 bg-gray-700 hover:bg-gray-600"
             >
-              <Twitter className="h-5 w-5 mr-2" />
-              <span>Twitter</span>
+              <Mail className="h-5 w-5 mr-2" />
+              <span>Gmail</span>
             </Button>
           </div>
         </div>
+        <div className="text-center">
+            <Link href="./forgot-password" className="text-sm text-gray-600 hover:text-gray-900">
+              Forgot your password?
+            </Link>
+          </div>
       </div>
     </WavyBackground>
   );
