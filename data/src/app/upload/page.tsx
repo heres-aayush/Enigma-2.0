@@ -56,7 +56,6 @@ export default function UploadPage() {
         className="w-full max-w-2xl space-y-8 bg-gray-900 bg-opacity-90 rounded-xl shadow-2xl p-8"
       >
         <h1 className="text-4xl font-bold text-center text-white">File Upload</h1>
-
         <div
           {...getRootProps()}
           className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors duration-300 ${
