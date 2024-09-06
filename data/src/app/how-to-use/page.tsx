@@ -5,48 +5,99 @@ import Image from "next/image";
 
 const content = [
   {
-    title: "Collaborative Editing",
+    title: "Upload Your Docs",
     description:
-      "Work together in real time with your team, clients, and stakeholders. Collaborate on documents, share ideas, and make decisions quickly. With our platform, you can streamline your workflow and increase productivity.",
+      "Here you can directly drag and drop your documents or you can provide it from your computer.",
     content: (
-      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
-        Collaborative Editing
-      </div>
-    ),
-  },
-  {
-    title: "Real time changes",
-    description:
-      "See changes as they happen. With our platform, you can track every modification in real time. No more confusion about the latest version of your project. Say goodbye to the chaos of version control and embrace the simplicity of real-time updates.",
-    content: (
-      <div className="h-full w-full  flex items-center justify-center text-white">
+      <div className="h-full w-full flex items-center justify-center text-white">
         <Image
-          src="/linear.webp"
+          src="/assets/upload.jpg"  // Fixed the src attribute
           width={300}
           height={300}
           className="h-full w-full object-cover"
-          alt="linear board demo"
+          alt="Upload demo"
         />
       </div>
     ),
   },
   {
-    title: "Version control",
+    title: "Redact/Blur and Customisation",
     description:
-      "Experience real-time updates and never stress about version control again. Our platform ensures that you're always working on the most recent version of your project, eliminating the need for constant manual updates. Stay in the loop, keep your team aligned, and maintain the flow of your work without any interruptions.",
+      "You can either choose to redact(blank) or blur your docs.You can choose to redact/blur only those parts of your document that you find necessary.",
     content: (
-      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--orange-500),var(--yellow-500))] flex items-center justify-center text-white">
-        Version control
+      <div className="h-full w-full flex items-center justify-center text-white">
+        <Image
+          src="/assets/redact_blur.jpg"
+          width={300}
+          height={300}
+          className="h-full w-full object-cover"
+          alt="Redact or blur demo"
+        />
+      </div>
+    ),
+  },
+  // {
+  //   title: "Customisation",
+  //   description:
+  //     "You can choose to redact/blur only those parts of your document that you find necessary.",
+  //   content: (
+  //     <div className="h-full w-full flex items-center justify-center text-white">
+  //       <Image
+  //         src="/linear.webp"
+  //         width={300}
+  //         height={300}
+  //         className="h-full w-full object-cover"
+  //         alt="Customisation demo"
+  //       />
+  //     </div>
+  //   ),
+  // },
+  {
+    title: "Show Preview",
+    description:
+      "Here you can view a live preview of what your document will look like.",
+    content: (
+      <div className="h-full w-full flex items-center justify-center text-white">
+        <Image
+          src="/linear.webp"
+          width={300}
+          height={300}
+          className="h-full w-full object-cover"
+          alt="Preview demo"
+        />
       </div>
     ),
   },
   {
-    title: "Running out of content",
+    title: "Download doc",
     description:
-      "Experience real-time updates and never stress about version control again. Our platform ensures that you're always working on the most recent version of your project, eliminating the need for constant manual updates. Stay in the loop, keep your team aligned, and maintain the flow of your work without any interruptions.",
+      "Here you can download the final redacted/blurred version of your document.",
     content: (
-      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
-        Running out of content
+      <div className="h-full w-full flex items-center justify-center text-white">
+        <Image
+          src="/assets/download.jpg"
+          width={300}
+          height={300}
+          className="h-full w-full object-cover"
+          alt="Download demo"
+        />
+      </div>
+    ),
+  },
+
+  {
+    title: "Follow",
+    description:
+      "Follow the steps to completely and peacefully use our website without plucking any of your hair.",
+    content: (
+      <div className="h-full w-full flex items-center justify-center text-white">
+        <Image
+          src="/assets/download.jpg"
+          width={300}
+          height={300}
+          className="h-full w-full object-cover"
+          alt="Download demo"
+        />
       </div>
     ),
   },
@@ -54,7 +105,8 @@ const content = [
 
 export default function StickyScrollRevealDemo() {
   return (
-    <div className="p-10">
+    <div className="min-h-screen flex flex-col p-10">
+      {/* Ensure the content takes up full height */}
       <StickyScroll content={content} />
     </div>
   );
