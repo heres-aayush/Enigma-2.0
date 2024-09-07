@@ -3,13 +3,20 @@ from werkzeug.utils import secure_filename
 import os
 import redact_code  # Import your existing redaction code
 from unittest.mock import patch
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 
-# Ensure the upload folder exists
+"""# Ensure the upload folder exists
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
+    os.makedirs(app.config['UPLOAD_FOLDER'])"""
+
+# Directory to store processed files
+PROCESSED_FOLDER = os.path.join(os.getcwd())
+if not os.path.exists(PROCESSED_FOLDER):
+    os.makedirs(PROCESSED_FOLDER)
 
 @app.route('/redact_image', methods=['POST'])
 def redact_image_api():
@@ -46,6 +53,29 @@ def redact_image_api():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+from flask import send_file
+
+from flask import send_from_directory
+"""
+# Assuming 'processed_files' folder is in the root directory of your Flask project
+PROCESSED_FOLDER = os.path.join(os.getcwd(), 'processed_files')
+if not os.path.exists(PROCESSED_FOLDER):
+    os.makedirs(PROCESSED_FOLDER)
+
+# Route to download the file
+@app.route('/download/<filename>')
+def download_file(filename):
+    return send_from_directory(PROCESSED_FOLDER, filename)
+"""
+
+# Route to download the file
+@app.route('/download/<filename>', methods=['GET'])
+def download_file(filename):
+    try:
+        return send_from_directory(PROCESSED_FOLDER, filename)
+    except FileNotFoundError:
+        return jsonify({"error": "File not found"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
