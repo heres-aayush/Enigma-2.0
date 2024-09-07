@@ -6,11 +6,11 @@ import argparse
 import re
 import os
 from pyzbar.pyzbar import decode
-
+"""
 # Configure Tesseract path if necessary
 tesseract_cmd = os.getenv('TESSERACT_CMD', '/usr/bin/tesseract')
 pytesseract.pytesseract.tesseract_cmd = tesseract_cmd
-
+"""
 # PII detection patterns
 PII_PATTERNS = {
     "Email": {
