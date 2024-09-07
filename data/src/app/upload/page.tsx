@@ -6,45 +6,59 @@ import { useDropzone } from 'react-dropzone'
 import { Button } from "@/components/ui/button"
 import { Upload, FileX, CheckCircle, Download } from 'lucide-react'
 import { WavyBackground } from "@/components/ui/wavy-background"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import RedactionOptions from '../redaction-option/page'
 
 export default function UploadPage() {
   const [files, setFiles] = useState<File[]>([])
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle')
   const [processedData, setProcessedData] = useState<string | null>(null)
+  const [showPIIDialog, setShowPIIDialog] = useState(false)
+  const [detectedPII, setDetectedPII] = useState<string>('')
+  const [showRedactionOptions, setShowRedactionOptions] = useState(false)
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    setFiles(acceptedFiles)
+    const imageFiles = acceptedFiles.filter(file => 
+      ['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)
+    )
+    setFiles(imageFiles)
     setUploadStatus('idle')
     setProcessedData(null)
   }, [])
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
+    onDrop,
+    accept: {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png']
+    }
+  })
 
   const handleUpload = () => {
     setUploadStatus('uploading')
     // Simulating upload process
     setTimeout(() => {
       setUploadStatus('success')
-      // Simulating data retrieval from backend
-      setTimeout(() => {
-        setProcessedData('Processed data from backend')
-      }, 1000)
+      // Simulating PII detection
+      setDetectedPII("Date of Birth: 01/01/1990\nPhone: 123-456-7890\nEmail: user@example.com")
+      setShowPIIDialog(true)
     }, 2000)
   }
 
   const handleRedact = () => {
-    // Implement redaction logic here
-    console.log('Redacting files:', files)
-  }
-
-  const handleMask = () => {
-    // Implement masking logic here
-    console.log('Masking files:', files)
+    setShowRedactionOptions(true)
   }
 
   const handleDownload = () => {
     // Implement download logic here
     console.log('Downloading processed data:', processedData)
+  }
+
+  const handleRedactionComplete = (fields: string[], method: 'blank' | 'blur') => {
+    console.log('Redacting fields:', fields, 'with method:', method)
+    setShowRedactionOptions(false)
+    // Simulating redaction process
+    setProcessedData('Redacted data')
   }
 
   return (
@@ -65,7 +79,10 @@ export default function UploadPage() {
           <input {...getInputProps()} />
           <Upload className="mx-auto h-20 w-20 text-blue-400" />
           <p className="mt-4 text-xl text-blue-200">
-            Drag 'n' drop some files here, or click to select files
+            Drag 'n' drop some image files here, or click to select files
+          </p>
+          <p className="mt-2 text-sm text-blue-300">
+            (Only *.jpg, *.jpeg, and *.png files will be accepted)
           </p>
         </div>
 
@@ -99,16 +116,9 @@ export default function UploadPage() {
             <Button
               onClick={handleRedact}
               className="flex-1 bg-red-700 hover:bg-red-800 text-white text-lg py-3"
-              disabled={files.length === 0 || uploadStatus === 'uploading'}
+              disabled={files.length === 0 || uploadStatus !== 'success'}
             >
               Redact
-            </Button>
-            <Button
-              onClick={handleMask}
-              className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white text-lg py-3"
-              disabled={files.length === 0 || uploadStatus === 'uploading'}
-            >
-              Blur
             </Button>
           </div>
           
@@ -136,6 +146,25 @@ export default function UploadPage() {
           )}
         </AnimatePresence>
       </motion.div>
+
+      <Dialog open={showPIIDialog} onOpenChange={setShowPIIDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Detected PII</DialogTitle>
+          </DialogHeader>
+          <div className="mt-4">
+            <p className="text-lg font-semibold mb-2">These are your PII detected:</p>
+            <pre className="bg-gray-100 p-4 rounded-md whitespace-pre-wrap">{detectedPII}</pre>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {showRedactionOptions && (
+        <RedactionOptions
+          onClose={() => setShowRedactionOptions(false)}
+          onRedact={handleRedactionComplete}
+        />
+      )}
     </WavyBackground>
   )
 }
