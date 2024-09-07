@@ -8,14 +8,52 @@ import os
 from pyzbar.pyzbar import decode
 import spacy
 from spacy import displacy
-
-# Configure Tesseract path if necessary
-#tesseract_cmd = os.getenv('TESSERACT_CMD', '/usr/bin/tesseract')
-#pytesseract.pytesseract.tesseract_cmd = tesseract_cmd
-
 # PII detection patterns
 PII_PATTERNS = {
-    # Your regex and keyword patterns here...
+    "Email": {
+        "regex": r"[A-Za-z0-9._+\-']+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}",
+        "keywords": None
+    },
+    "Phone Number": {
+        "regex": r"(\+?\d{1,4}[ -]?\(?\d{1,4}\)?[ -]?\d{1,9}[ -]?\d{1,9}|(?:\d{3}[-.\s]){2}\d{4})",
+        "keywords": ["phone", "telephone", "tel", "contact", "whatsapp", "telegram", "sms"]
+    },
+    "Banking": {
+        "regex": None,
+        "keywords": ["bank", "bank account", "statement", "ifsc", "branch", "savings", "account number", "amount", "credit", "debit"]
+    },
+    "Payment Card": {
+        "regex": r"\b(?:\d{4}[ -]?){3}\d{4}\b",
+        "keywords": ["visa", "mastercard", "amex", "american express", "rupay", "debit card", "credit card", "atm card", "bank", "valid", "expires", "expiry", "thru", "cvv"]
+    },
+    "Aadhaar Card": {
+        "regex": r"\b\d{4}[ -]?\d{4}[ -]?\d{4}\b",
+        "keywords": ["Aadhaar", "UID", "UIDAI", "Unique", "Identification", "Authority", "Address", "Government of India"]
+    },
+    "Permanent Account Number": {
+        "regex": "[A-Z]{5}?[0-9]{4}[A-Z]",
+        "keywords": ["PAN", "income", "tax", "permanent", "account", "department", "India", "Govt."]
+    },
+    "Driving License": {
+        "regex": r"\b[A-Z]{2}[ -]?\d{2}[ -]?\d{4}[ -]?\d{7}\b",
+        "keywords": ["driving license", "DL", "license number"]
+    },
+    "Passport": {
+        "regex": r"\b[A-Z]{1}[0-9]{7}\b",
+        "keywords": ["passport", "passport number"]
+    },
+    "Address": {
+        "regex": r"\d{1,5}\s[A-Za-z\s]+(?:\s(?:Street|St\.|Road|Rd\.|Avenue|Ave\.|Boulevard|Blvd\.|Lane|Ln\.|Drive|Dr\.|Sector|Block|Colony|Nagar|Garden|Park|Apartment|Tower|Building|Room|House))\b(?:,\s[A-Za-z\s]+(?:\s[A-Za-z\s]+)*(?:,\s(?:[A-Za-z\s]+))?)?(?:\s(?:\d{5}(?:[-\s]\d{4})?)?)?",
+        "keywords": ["Street", "St.", "Road", "Rd.", "Avenue", "Ave.", "Boulevard", "Blvd.", "Lane", "Ln.", "Drive", "Dr.", "City", "State", "Zip Code", "Country", "Sector", "Block", "Colony", "Nagar", "Garden", "Park", "Apartment", "Tower", "Building", "Room", "House"]
+    },
+    "Date of Birth": {
+        "regex":  r"\b(\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}[/-]\d{2}[/-]\d{2}|\d{2}[ ]\w{3}[ ]\d{4}|\b\d{2}/\d{2}/\d{4}\b)\b",
+        "keywords": ["date of birth", "DOB", "birth date", "born on", "born", "dob", "Year of Birth"]
+    },
+    "Date of Issue": {
+        "regex": r"\b(\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}[/-]\d{2}[/-]\d{2}|\d{2}[ ]\w{3}[ ]\d{4}|\b\d{2}/\d{2}/\d{4}\b)\b",
+        "keywords": ["date of issue", "issue date", "DOI", "issued on","Date of Issue"]
+    }
 }
 
 def extract_text_with_boxes(image_path):

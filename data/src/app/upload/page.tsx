@@ -4,16 +4,18 @@ import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useDropzone } from 'react-dropzone'
 import { Button } from "@/components/ui/button"
-import { Upload, FileX, CheckCircle } from 'lucide-react'
+import { Upload, FileX, CheckCircle, Download } from 'lucide-react'
 import { WavyBackground } from "@/components/ui/wavy-background"
 
 export default function UploadPage() {
   const [files, setFiles] = useState<File[]>([])
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle')
+  const [processedData, setProcessedData] = useState<string | null>(null)
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles(acceptedFiles)
     setUploadStatus('idle')
+    setProcessedData(null)
   }, [])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
@@ -23,12 +25,26 @@ export default function UploadPage() {
     // Simulating upload process
     setTimeout(() => {
       setUploadStatus('success')
+      // Simulating data retrieval from backend
+      setTimeout(() => {
+        setProcessedData('Processed data from backend')
+      }, 1000)
     }, 2000)
   }
 
   const handleRedact = () => {
     // Implement redaction logic here
     console.log('Redacting files:', files)
+  }
+
+  const handleMask = () => {
+    // Implement masking logic here
+    console.log('Masking files:', files)
+  }
+
+  const handleDownload = () => {
+    // Implement download logic here
+    console.log('Downloading processed data:', processedData)
   }
 
   return (
@@ -40,7 +56,6 @@ export default function UploadPage() {
         className="w-full max-w-2xl space-y-8 bg-gray-900 bg-opacity-90 rounded-xl shadow-2xl p-8"
       >
         <h1 className="text-4xl font-bold text-center text-white">File Upload</h1>
-        
         <div
           {...getRootProps()}
           className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors duration-300 ${
@@ -71,20 +86,39 @@ export default function UploadPage() {
           )}
         </AnimatePresence>
 
-        <div className="flex space-x-4">
+        <div className="flex flex-col space-y-4">
           <Button
             onClick={handleUpload}
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-lg py-3"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg py-3"
             disabled={files.length === 0 || uploadStatus === 'uploading' || uploadStatus === 'success'}
           >
             {uploadStatus === 'uploading' ? 'Uploading...' : 'Upload'}
           </Button>
+          
+          <div className="flex space-x-4">
+            <Button
+              onClick={handleRedact}
+              className="flex-1 bg-red-700 hover:bg-red-800 text-white text-lg py-3"
+              disabled={files.length === 0 || uploadStatus === 'uploading'}
+            >
+              Redact
+            </Button>
+            <Button
+              onClick={handleMask}
+              className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white text-lg py-3"
+              disabled={files.length === 0 || uploadStatus === 'uploading'}
+            >
+              Blur
+            </Button>
+          </div>
+          
           <Button
-            onClick={handleRedact}
-            className="flex-1 bg-red-700 hover:bg-red-700 text-white text-lg py-3"
-            disabled={files.length === 0 || uploadStatus === 'uploading'}
+            onClick={handleDownload}
+            className="w-full bg-green-600 hover:bg-green-700 text-white text-lg py-3"
+            disabled={!processedData}
           >
-            Redact
+            <Download className="mr-2 h-5 w-5" />
+            Download Processed Data
           </Button>
         </div>
 
